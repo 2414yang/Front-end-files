@@ -1,0 +1,100 @@
+<!DOCTYPE html>      
+<html lang="en">      
+<head>      
+    <meta charset="UTF-8">      
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">      
+    <title>address list</title>      
+    <style>      
+    </style>      
+</head>      
+<body>      
+    <div class="contact-form">      
+        <h2>添加/修改联系人</h2>      
+        <form id="contactForm" action="">      
+            <input type="hidden" id="contactId">      
+            <input type="text" placeholder="姓名" name="name" required>      
+            <input type="tel" placeholder="电话号码" name="phone" required>      
+            <input type="submit" value="保存">      
+        </form>      
+    </div>      
+       
+    <div class="contact-list">      
+        <h2>通讯录</h2>      
+        <ul id="contactList">      
+            <!-- 联系人列表将动态生成在这里 -->      
+        </ul>      
+    </div>      
+       
+    <script>      
+        let contactIdCounter = 0; // 用于生成唯一的联系人ID  
+  
+        function addContact(name, phone, id = null) {      
+            const list = document.getElementById('contactList');      
+            const newContact = document.createElement('li');      
+            const contactInfo = document.createElement('span');      
+            const deleteButton = document.createElement('button');      
+            const editButton = document.createElement('button');      
+              
+            contactInfo.textContent = `${name} - ${phone}`;      
+            deleteButton.textContent = "删除";      
+            editButton.textContent = "修改";      
+              
+            if (id) {  
+                newContact.dataset.id = id; // 存储联系人ID  
+            } else {  
+                newContact.dataset.id = `contact-${contactIdCounter++}`; // 生成新的ID  
+            }  
+              
+            newContact.appendChild(contactInfo);      
+            newContact.appendChild(editButton);      
+            newContact.appendChild(deleteButton);      
+              
+            list.appendChild(newContact);      
+              
+            // 添加删除按钮的点击事件监听器    
+            deleteButton.addEventListener('click', function() {    
+                list.removeChild(newContact);    
+            });  
+              
+            // 添加修改按钮的点击事件监听器  
+            editButton.addEventListener('click', function() {  
+                const form = document.getElementById('contactForm');  
+                form.reset();  
+                form.querySelector('#contactId').value = newContact.dataset.id;  
+                form.querySelector('input[name="name"]').value = name;  
+                form.querySelector('input[name="phone"]').value = phone;  
+                // 显示表单（如果需要隐藏表单，可以在这里添加逻辑）  
+            });  
+        }      
+           
+        // 假设这是表单提交的事件监听器      
+        document.getElementById('contactForm').addEventListener('submit', function(event) {      
+            event.preventDefault(); // 阻止表单默认提交行为      
+            const name = event.target.name.value;      
+            const phone = event.target.phone.value;      
+            const contactId = event.target.contactId.value;      
+              
+            if (contactId) {  
+                // 更新现有联系人  
+                const list = document.getElementById('contactList');  
+                const contacts = list.getElementsByTagName('li');  
+                for (let contact of contacts) {  
+                    if (contact.dataset.id === contactId) {  
+                        const contactInfo = contact.querySelector('span');  
+                        contactInfo.textContent = `${name} - ${phone}`;  
+                        break;  
+                    }  
+                }  
+            } else {  
+                // 添加新联系人  
+                addContact(name, phone);  
+            }  
+              
+            event.target.reset(); // 重置表单 
+        });  
+            
+
+    </script>      
+       
+</body>      
+</html>
